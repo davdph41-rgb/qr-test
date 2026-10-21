@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Senja Biru Beach Bar</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="hero">
+  <div class="stars"></div>
+  <div class="sun"></div>
+  <div class="hero-in">
+    <div class="top"><span class="brand">Senja Biru</span><span class="chip" id="meja">Meja 5</span></div>
+    <h1>Duduk dulu, pesanan menyusul.</h1>
+    <p class="lead">Pilih menu langsung dari mejamu, sambil menunggu matahari turun.</p>
+    <a class="cta" href="#menu">Lihat menu</a>
+  </div>
+  <div class="waves" aria-hidden="true">
+    <svg class="w2" viewBox="0 0 1200 130" preserveAspectRatio="none"><path d="M0 60 Q150 20 300 60 T600 60 T900 60 T1200 60 V130 H0Z" fill="#4FB3D9" fill-opacity=".55"/></svg>
+    <svg class="w1" viewBox="0 0 1200 130" preserveAspectRatio="none"><path d="M0 85 Q150 50 300 85 T600 85 T900 85 T1200 85 V130 H0Z" style="fill:var(--sand)"/></svg>
+  </div>
+</header>
+
+<section class="info">
+  <strong>Buka setiap hari, 10.00 – 23.00</strong>
+  <span>Pesanan diantar ke mejamu. Tidak perlu antre di kasir.</span>
+</section>
+
+<div class="tabs" id="menu"><div class="tabs-in" role="tablist" id="tabs"></div></div>
+<main id="list" aria-live="polite"></main>
+<footer>Senja Biru Beach Bar · Harga sudah termasuk pajak</footer>
+
+<div class="bar" id="bar"><button id="openCart"><span id="barQty"></span><span id="barTotal"></span></button></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="Pesananmu">
+  <div class="panel">
+    <h2>Pesananmu</h2>
+    <div id="rows"></div>
+    <div class="form">
+      <label class="fld">Atas nama<input id="fNama" type="text" maxlength="30" autocomplete="given-name" placeholder="Nama kamu"></label>
+      <label class="fld">No. meja<input id="fMeja" type="text" maxlength="4" autocomplete="off" placeholder="5"></label>
+      <label class="fld full">Nomor WhatsApp (opsional)<input id="fWa" type="tel" inputmode="tel" maxlength="16" autocomplete="tel" placeholder="081234567890"></label>
+      <label class="fld full">Catatan pesanan (opsional)<textarea id="fCatatan" maxlength="140" placeholder="Contoh: less sugar, tanpa pedas"></textarea></label>
+    </div>
+    <p class="err" id="fErr" role="alert"></p>
+    <div class="tot"><span>Total</span><span id="total"></span></div>
+    <button class="pay" id="pay">Bayar sekarang</button>
+    <button class="close" id="close">Kembali ke menu</button>
+  </div>
+</div>
+<div class="toast" id="toast" role="status"></div>
+
+<script src="script.js"></script>
+</body>
+</html>
