@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dapur - Senja Biru</title>
+<style>
+body{margin:0;font-family:system-ui,sans-serif;background:#0D2239;color:#EAF1F8}
+header{padding:16px 18px;background:#0A2E4D;font-weight:700}
+#list{padding:14px;display:grid;gap:12px;max-width:720px;margin:0 auto}
+.o{background:#12304D;border:1.5px solid #4FB3D9;border-radius:14px;padding:14px}
+.o.selesai{opacity:.55;border-color:#3C5A78}
+.top{display:flex;justify-content:space-between;font-weight:700;font-size:1.15rem;margin-bottom:6px}
+.it{display:flex;justify-content:space-between;padding:5px 0;border-top:1px dashed #3C5A78}
+.cat{color:#C4CFF5;margin-top:8px}
+.meta{color:#A5BBD0;font-size:.9rem}
+button{font:inherit;background:#1673A6;color:#fff;border:0;border-radius:10px;padding:11px 18px;margin-top:10px}
+</style>
+</head>
+<body>
+<header>Dapur dan kasir - Senja Biru</header>
+<div id="list">Memuat...</div>
+<script>
+let pin=sessionStorage.getItem("pin")||"";
+const $=id=>document.getElementById(id);
+const rp=n=>"Rp "+n.toLocaleString("id-ID");
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+let timer=null;
+async function load(){
+  if(!pin){pin=prompt("Masukkan PIN dapur")||"";if(!pin){$("list").textContent="PIN dibutuhkan. Muat ulang halaman.";return}}
+  const r=await fetch("/api/orders",{headers:{"x-pin":pin}});
+  if(r.status===401){sessionStorage.removeItem("pin");pin="";clearInterval(timer);$("list").textContent="PIN salah. Muat ulang halaman.";return}
+  sessionStorage.setItem("pin",pin);
+  const data=await r.json();
+  $("list").innerHTML=data.length?data.map(o=>{
+    const t=new Date(o.paidAt||o.createdAt).toLocaleTimeString("id-ID",{hour:"2-digit",minute:"2-digit"});
+    return `<div class="o ${o.status}"><div class="top"><span>Meja ${esc(o.meja)}</span><span>${esc(o.nama)}</span></div><div class="meta">${o.id} - ${t}</div>`+
+      o.items.map(i=>`<div class="it"><span>${i.qty}x ${esc(i.name)}</span><span>${rp(i.price*i.qty)}</span></div>`).join("")+
+      `<div class="it"><b>Total</b><b>${rp(o.total)}</b></div>`+
+      (o.catatan?`<div class="cat">Catatan: ${esc(o.catatan)}</div>`:"")+
+      (o.wa?`<div class="meta">WhatsApp: ${esc(o.wa)}</div>`:"")+
+      (o.status==="lunas"?`<button onclick="done('${o.id}')">Tandai selesai</button>`:"")+`</div>`;
+  }).join(""):"<p>Belum ada pesanan lunas.</p>";
+}
+async function done(id){
+  await fetch("/api/orders",{method:"POST",headers:{"x-pin":pin,"Content-Type":"application/json"},body:JSON.stringify({id:id})});
+  load();
+}
+load();
+timer=setInterval(load,5000);
+</script>
+</body>
+</html>
